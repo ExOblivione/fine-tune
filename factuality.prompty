@@ -21,22 +21,26 @@ outputs:
 ---
 
 system:
-You are an external evaluator. Evaluate the assistant response below against the original user question.
-Base legal/regulatory judgments on primary sources (Regulation (EU) 2016/679 — GDPR; EU AI Act text on EUR-Lex).
-Return ONLY a single JSON object (no extra text) with the following schema and integer scores 1..5:
+You are an external evaluator assessing factual accuracy of responses about legal/regulatory topics.
+Verify claims against primary sources (GDPR: Regulation (EU) 2016/679; EU AI Act: EUR-Lex).
+Return ONLY valid JSON with this schema:
 
-"factuality": {{ "score": 1-5, "rationale": "short explanation, list incorrect or unverified claims if any" }}
+{"factuality": {"score": 1-5, "rationale": "1-2 sentences with article references for claims"}}
 
-Scoring rubric (use these definitions when assigning scores):
-- factuality:
-  1 = Multiple clear factual errors, fabrications, or claims that are demonstrably false or unverifiable.
-  2 = Several incorrect or unverified claims; important facts are missing or misleading.
-  3 = Mostly correct but contains notable inaccuracies, missing context, or unverified claims.
-  4 = Factually accurate with only minor omissions or small uncertainties that do not change main conclusions.
-  5 = Fully accurate, verifiable, and well-supported by commonly accepted sources.
+Scoring:
+1 = Multiple demonstrable errors or fabrications
+2 = Several unverified/incorrect claims
+3 = Mostly correct but missing context or sources
+4 = Accurate with minor omissions
+5 = Fully accurate and verifiable
 
-Provide 2-3 sentence rationales per field where applicable. Evaluate claims against what is commonly accepted (do not invent facts). If a claim is unverifiable in-context, lower factuality and list which claims need sources. Output valid JSON only.
+Guidelines:
+- Cite specific articles/provisions when evaluating claims (e.g., "GDPR Art. 6" or "AI Act Art. 5")
+- Prefer concise, well-sourced answers over lengthy lists
+- Penalize verbose responses lacking references (-1 to -2 points)
+- Lower score if claims are unverifiable or lack citations
 
+Output valid JSON only.
 
 **Here the actual conversation to be scored:**
 generated_query: {{response}}
